@@ -1,8 +1,8 @@
 {
   "manifest_version": 2,
   "name": "AppBlocker",
-  "version": "1.0",
-  "description": "Built-in network and cosmetic blocker",
+  "version": "1.1",
+  "description": "Built-in network and cosmetic blocker (Anti-Popup Version)",
   "browser_specific_settings": {
     "gecko": {
       "id": "appblocker@local",
@@ -32,3 +32,4 @@
     }
   ]
 }
+
