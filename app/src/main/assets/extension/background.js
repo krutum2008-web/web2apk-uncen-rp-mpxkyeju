@@ -1,0 +1,1 @@
+(function(){var P=[];if(!P.length)return;browser.webRequest.onBeforeRequest.addListener(function(d){for(var i=0;i<P.length;i++){if(d.url.indexOf(P[i])!==-1)return{cancel:true};}},{urls:["<all_urls>"]},["blocking"]);})();
