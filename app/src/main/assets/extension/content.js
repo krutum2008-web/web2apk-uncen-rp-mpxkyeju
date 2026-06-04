@@ -1,5 +1,5 @@
-// Part 1: Inject Anti-Popup CSS Armor immediately
-const injectAntiPopupStyle = () => {
+// Part 1: Phantom Cloak Settings (100% Invisible & Click-Through)
+const injectPhantomStyle = () => {
     if (document.getElementById('anti-popup-armor')) return;
     const style = document.createElement('style');
     style.id = 'anti-popup-armor';
@@ -9,12 +9,13 @@ const injectAntiPopupStyle = () => {
       div[data-sentry-source-file="DownloadAppPopup.tsx"],
       div[data-sentry-source-file="DownloadAppTopBar.tsx"],
       .fixed.inset-0.z-\\[100\\] {
-        display: none !important;
-        visibility: hidden !important;
+        opacity: 0.001 !important;
         pointer-events: none !important;
-        opacity: 0 !important;
-        height: 0 !important;
-        width: 0 !important;
+        user-select: none !important;
+        background: transparent !important;
+      }
+      body.keyboard-active {
+        padding-bottom: 40vh !important;
       }
     `;
     if (document.documentElement) {
@@ -22,26 +23,16 @@ const injectAntiPopupStyle = () => {
     }
 };
 
-// Run Part 1 immediately when script touches the page
-injectAntiPopupStyle();
+// Run Part 1 instantly
+injectPhantomStyle();
 
-// Part 2: Setup MutationObserver to watch and remove popups dynamically
-const setupAntiPopupObserver = () => {
+// Part 2: Soft Keep-Alive Observer (No element removal, just unlock scrolling if locked)
+const setupPhantomObserver = () => {
     const observer = new MutationObserver((mutations) => {
-        const popup = document.querySelector('div[data-sentry-component="DownloadAppPopup"]');
-        const topbar = document.querySelector('div[data-sentry-component="DownloadAppTopBar"]');
-        
-        if (popup) {
-            popup.remove();
-            if (document.body) {
-                document.body.style.setProperty('overflow', 'auto', 'important');
-            }
+        if (document.body && document.body.style.overflow === 'hidden') {
+            document.body.style.setProperty('overflow', 'auto', 'important');
         }
-        if (topbar) {
-            topbar.remove();
-        }
-        
-        injectAntiPopupStyle();
+        injectPhantomStyle();
     });
 
     if (document.documentElement) {
@@ -49,10 +40,27 @@ const setupAntiPopupObserver = () => {
     }
 };
 
-// Run Part 2 based on document loading state
 if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', setupAntiPopupObserver);
+    document.addEventListener('DOMContentLoaded', setupPhantomObserver);
 } else {
-    setupAntiPopupObserver();
+    setupPhantomObserver();
+}
+
+// Part 3: Viewport Keyboard Fix
+if (window.visualViewport) {
+    const originalHeight = window.visualViewport.height;
+    window.visualViewport.addEventListener('resize', () => {
+        const currentHeight = window.visualViewport.height;
+        const chatInputContainer = document.querySelector('div.fixed.bottom-0') || document.querySelector('footer') || document.body.lastElementChild;
+        
+        if (originalHeight - currentHeight > 150) {
+            document.body.classList.add('keyboard-active');
+            if (chatInputContainer) {
+                chatInputContainer.scrollIntoView({ block: 'end', behavior: 'smooth' });
+            }
+        } else {
+            document.body.classList.remove('keyboard-active');
+        }
+    });
 }
 
